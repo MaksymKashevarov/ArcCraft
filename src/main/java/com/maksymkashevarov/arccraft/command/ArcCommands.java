@@ -9,6 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 
 public final class ArcCommands {
 
@@ -20,6 +21,13 @@ public final class ArcCommands {
                 Commands.literal("arc")
                         .then(Commands.literal("agent")
                                 .executes(context -> showAgent(context.getSource())))
+                        .then(Commands.literal("auth")
+                                .requires(source -> source.hasPermission(2))
+                                .then(Commands.argument("authorized", BoolArgumentType.bool())
+                                        .executes(context -> executeAuth(
+                                                context.getSource(),
+                                                BoolArgumentType.getBool(context, "authorized")
+                                        ))))
         );
     }
 
@@ -38,6 +46,27 @@ public final class ArcCommands {
                 () -> {
                     return Component.literal(result);
                 },
+                false
+        );
+
+        return 1;
+    }
+
+    private static int executeAuth(CommandSourceStack source, boolean authorized)
+            throws CommandSyntaxException {
+
+        ServerPlayer player = source.getPlayerOrException();
+
+        AgentData data = player.getData(
+                ArcAttachments.AGENT_DATA.get()
+        );
+
+        data.setAuthorized(authorized);
+
+        player.setData(ArcAttachments.AGENT_DATA.get(), data);
+
+        source.sendSuccess(
+                () -> Component.literal("Authorized: " + data.isAuthorized()),
                 false
         );
 

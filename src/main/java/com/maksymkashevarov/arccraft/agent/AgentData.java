@@ -37,4 +37,8 @@ public class AgentData {
         }
         authorized = true;
     }
+
+    public void setAuthorized(boolean authorized) {
+        this.authorized = authorized;
+    }
 }
