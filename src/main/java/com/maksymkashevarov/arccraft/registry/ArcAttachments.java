@@ -20,7 +20,10 @@ public final class ArcAttachments {
     public static final Supplier<AttachmentType<AgentData>> AGENT_DATA =
             ATTACHMENTS.register(
                     "agent_data",
-                    () -> AttachmentType.builder(AgentData::new).build()
+                    () -> AttachmentType.builder(AgentData::new)
+                            .serialize(AgentData.CODEC)
+                            .copyOnDeath()
+                            .build()
             );
 
     private ArcAttachments() {
