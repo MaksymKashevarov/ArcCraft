@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arccraft:block/contract_core"
+    }
+  }
+}
